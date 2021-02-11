@@ -28,19 +28,20 @@ void gauss_eliminate(matrix *mtx, size_t args, ...)
     {
 
         if (fabs(mtx->elem[h][k]) < 0.05 && h != mtx->rows - 1)
-        {
+        { // If pivot is null,
             size_t i_max;
             double max = 0;
             for (size_t n = h + 1; n < mtx->rows; n++)
-            { // If pivot is null,
+            {
                 if (fabs(mtx->elem[n][k]) >= max)
                 {                                // evaluate the index of the element
                     max = fabs(mtx->elem[n][k]); // with the gratest absolute value in the rest
                     i_max = n;                   // of the column
                 }
             }
-            if (mtx->elem[i_max][k] == 0)
+            if (mtx->elem[i_max][k] == 0 || max <= fabs(mtx->elem[h][k]))
             { // If there is no new pivot, go to the next column
+                fprintf(stderr, "Warning: Near degenerate matrix detected. Results may not be precise.");
                 k++;
                 continue;
             }
