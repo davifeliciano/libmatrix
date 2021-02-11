@@ -11,6 +11,7 @@ void gauss_eliminate(matrix *mtx, size_t args, ...)
     If that is not intended, make sure to pass copies using copy_matrix() */
 
     va_list ap;
+    int degenerate = 0;
     va_start(ap, args);
 
     for (size_t i = 0; i < args; i++)
@@ -41,7 +42,7 @@ void gauss_eliminate(matrix *mtx, size_t args, ...)
             }
             if (mtx->elem[i_max][k] == 0 || max <= fabs(mtx->elem[h][k]))
             { // If there is no new pivot, go to the next column
-                fprintf(stderr, "Warning: Near degenerate matrix detected. Results may not be precise.");
+                degenerate = 1;
                 k++;
                 continue;
             }
@@ -72,6 +73,9 @@ void gauss_eliminate(matrix *mtx, size_t args, ...)
         h++;
         k++;
     }
+
+    if (degenerate)
+        fprintf(stderr, "Warning: Near degenerate matrix detected. Results may not be precise.\n");
 }
 
 matrix solve(matrix *mtx, matrix *b)

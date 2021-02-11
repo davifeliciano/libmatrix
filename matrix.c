@@ -34,8 +34,9 @@ void print_matrix(matrix mtx, int precision)
         printf("{");
         for (size_t j = 0; j < mtx.cols - 1; j++)
             printf("%.*f, ", precision, mtx.elem[i][j]);
-        printf("%.*f}\n", precision, mtx.elem[i][mtx.cols]);
+        printf("%.*f}\n", precision, mtx.elem[i][mtx.cols - 1]);
     }
+    printf("\n");
 }
 
 matrix copy_matrix(matrix mtx)

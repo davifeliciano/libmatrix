@@ -1,2 +1,4 @@
 examples/determinant
 examples/random_matrix
+task?
+*.o
