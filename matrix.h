@@ -34,5 +34,6 @@ double det(matrix mtx);
 matrix inverse(matrix mtx);
 matrix import_data(char filename[]);
 void matrix_to_file(matrix mtx, int precision, char *filename);
+matrix *lu_decompose(matrix mtx);
 
 #endif
