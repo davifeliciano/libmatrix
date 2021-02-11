@@ -4,9 +4,10 @@
 #include "matrix.h"
 
 matrix *lu_decompose(matrix mtx)
-{
+{ // Return a pointer to an array with the matrixes l, u and p
     if (mtx.rows != mtx.cols)
         error("The matrix must be square in lu_decompose()");
+
     for (size_t i = 0; i < mtx.rows; i++)
     {
         if (null_row(mtx, i))
@@ -36,19 +37,20 @@ matrix *lu_decompose(matrix mtx)
                     i_max = n;                  // of the column
                 }
             }
-            if (mtx.elem[i_max][i] && max > mtx.elem[i_max][i])
+            if (mtx.elem[i_max][i] && max > mtx.elem[i][i])
             { // If there is a new pivot, swap rows in mtx and in the permutation matrix p
                 swap_rows(&mtx, i, i_max);
                 swap_rows(&p, i, i_max);
             }
             else
-                degenerate = 1;
+                degenerate = 1; // If no new pivot, matrix is near degenerate
         }
     }
 
     if (degenerate)
         fprintf(stderr, "Warning: Near degenerate matrix detected. Results may not be precise.\n");
 
+    // lu decomposition algorithm
     for (size_t i = 0; i < mtx.rows; i++)
     {
         l.elem[i][0] = mtx.elem[i][0];
@@ -78,10 +80,6 @@ matrix *lu_decompose(matrix mtx)
             u.elem[i][j] = (mtx.elem[i][j] - sum) / l.elem[i][i];
         }
     }
-
-    print_matrix(l, 1);
-    print_matrix(u, 1);
-    print_matrix(p, 1);
 
     matrix *result = (matrix *)malloc(3 * sizeof(matrix));
     result[0] = l;
