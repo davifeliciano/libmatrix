@@ -82,9 +82,10 @@ matrix *lu_decompose(matrix mtx)
     print_matrix(l, 1);
     print_matrix(u, 1);
     print_matrix(p, 1);
+
     matrix *result = (matrix *)malloc(3 * sizeof(matrix));
     result[0] = l;
-    result[0] = u;
-    result[0] = p;
+    result[1] = u;
+    result[2] = p;
     return result;
 }
