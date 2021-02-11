@@ -33,7 +33,7 @@ int main(int argc, char **argv)
         switch (ch)
         {
         case 's':
-            seed = atoi(optarg);
+            seed = abs(atoi(optarg));
             break;
 
         case 'o':
@@ -61,7 +61,10 @@ int main(int argc, char **argv)
         print_usage(program);
     }
 
-    srand(seed);
+    if (seed)
+        srand(seed);
+    else
+        srand(time(0));
 
     int dims[2] = {0, 0};
     for (size_t i = 0; i < 2; i++)
@@ -83,9 +86,19 @@ int main(int argc, char **argv)
     }
 
     if (filename)
+    {
         matrix_to_file(a, 5, filename);
+        if (seed)
+            printf("filename = %s; seed = %d\n", filename, seed);
+        else
+            printf("filename = %s\n", filename);
+    }
+    else
+    {
+        if (seed)
+            printf("seed = %d\n", seed);
+    }
 
-    printf("filename = %s; seed = %d\n", filename, seed);
     print_matrix(a, 5);
     return 0;
 }
