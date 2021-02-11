@@ -81,10 +81,7 @@ matrix import_data(char filename[])
     struct counts c = {filename, 0, 0, 0};
 
     if (csv_init(&p, CSV_APPEND_NULL))
-    {
-        fprintf(stderr, "Error: Failed to initialize csv parser\n");
-        exit(EXIT_FAILURE);
-    }
+        error("Failed to initialize csv parser");
 
     input = fopen(filename, "rb");
 
@@ -116,10 +113,7 @@ matrix import_data(char filename[])
     struct foo foobar = {m, c};
 
     if (csv_init(&p, 0))
-    {
-        fprintf(stderr, "Error: Failed to initialize csv parser\n");
-        exit(EXIT_FAILURE);
-    }
+        error("Failed to initialize csv parser");
 
     input = fopen(filename, "rb");
 

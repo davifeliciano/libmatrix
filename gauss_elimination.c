@@ -17,10 +17,7 @@ void gauss_eliminate(matrix *mtx, size_t args, ...)
     {                                     // Check if the number of rows of the arguments
         matrix *b = va_arg(ap, matrix *); // is equal to the number of rows of mtx
         if (b->rows != mtx->rows || b->cols != 1)
-        {
-            fprintf(stderr, "Error: The dimensions of the arguments of gauss_eliminate() differ\n");
-            exit(EXIT_FAILURE);
-        }
+            error("The number of rows in the arguments of gauss_eliminate() must be equal");
     }
 
     va_end(ap);
@@ -79,16 +76,10 @@ void gauss_eliminate(matrix *mtx, size_t args, ...)
 matrix solve(matrix *mtx, matrix *b)
 { // Return the solution x of a triangular system mtx * x = b
     if (mtx->rows != b->rows)
-    {
-        fprintf(stderr, "Error: The number of lines differ in the arguments of solve()\n");
-        exit(EXIT_FAILURE);
-    }
+        error("The number of rows in the arguments of solve() must be equal");
 
     if (b->cols != 1)
-    {
-        fprintf(stderr, "Error: The second argument of solve() must be a vector\n");
-        exit(EXIT_FAILURE);
-    }
+        error("The second argument of solve() must be a vector");
 
     if (mtx->rows != mtx->cols)
     {
@@ -102,10 +93,7 @@ matrix solve(matrix *mtx, matrix *b)
         for (size_t i = j + 1; i < mtx->rows; i++)
         {
             if (mtx->elem[i][j])
-            {
-                fprintf(stderr, "Error: The matrix must be upper triangular in solve()\n");
-                exit(EXIT_FAILURE);
-            }
+                error("Error: The matrix must be upper triangular in solve()");
         }
     }
 
@@ -163,10 +151,7 @@ matrix solve(matrix *mtx, matrix *b)
 double det(matrix mtx)
 {
     if (mtx.rows != mtx.cols)
-    {
-        fprintf(stderr, "Error: Argument is not a square matrix in det()\n");
-        exit(EXIT_FAILURE);
-    }
+        error("Argument is not a square matrix in det()");
 
     size_t h = 0;
     size_t k = 0;

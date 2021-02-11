@@ -9,6 +9,7 @@ typedef struct
     double **elem;
 } matrix;
 
+void error(char *msg);
 matrix create_matrix(size_t nrow, size_t ncol);
 void free_matrix(matrix *mtx);
 void print_matrix(matrix mtx, int precision);
