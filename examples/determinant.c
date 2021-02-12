@@ -17,12 +17,10 @@ int main(int argc, char **argv)
     printf("\n");
 
     clock_t tic = clock();
-
     printf("Determinant = %.3f\n", det(a));
-    free_matrix(&a);
-
     clock_t toc = clock();
 
+    free_matrix(&a);
     fprintf(stderr, "Elapsed: %f seconds\n", (double)(toc - tic) / CLOCKS_PER_SEC);
     return 0;
 }
