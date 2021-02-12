@@ -94,7 +94,7 @@ matrix solve(matrix *mtx, matrix *b)
         for (size_t i = j + 1; i < mtx->rows; i++)
         {
             if (mtx->elem[i][j])
-                error("Error: The matrix must be upper triangular in solve()");
+                error("The matrix must be upper triangular in solve()");
         }
     }
 
