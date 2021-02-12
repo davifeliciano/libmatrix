@@ -87,11 +87,7 @@ matrix solve(matrix *mtx, matrix *b)
         error("The second argument of solve() must be a vector");
 
     if (mtx->rows != mtx->cols)
-    {
-        fprintf(stderr, "Error: The matrix must be square and upper triangular in solve()\n");
-        print_matrix(*mtx, 3);
-        exit(EXIT_FAILURE);
-    }
+        error("The matrix must be square and upper triangular in solve()");
 
     for (size_t j = 0; j < mtx->cols; j++)
     {
