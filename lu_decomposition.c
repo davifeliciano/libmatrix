@@ -19,7 +19,6 @@ matrix *lu_decompose(matrix mtx)
     matrix l = create_matrix(mtx.rows, mtx.cols);
     matrix u = create_matrix(mtx.rows, mtx.cols);
     matrix p = Id(mtx.rows); // Permutation matrix, for pivoting
-    print_matrix(p, 1);
 
     int degenerate = 0;
 
@@ -96,18 +95,18 @@ matrix solve_lower(matrix a, matrix b)
     if (a.rows != b.rows)
         error("The number of rows in the arguments of solve_lower() must be equal");
 
-    for (size_t j = 1; j < a.cols; j++)
+    for (int j = 1; j < a.cols; j++)
     {
-        for (size_t i = j - 1; i >= 0; i--)
+        for (int i = j - 1; i >= 0; i--)
         {
-            if (a.elem[i][j])
+            if (a.elem[i][j] > THRESHOLD)
                 error("The matrix must be lower triangular in solve_lower()");
         }
     }
 
     matrix sol = create_matrix(a.rows, 1);
     sol.elem[0][0] = b.elem[0][0] / a.elem[0][0];
-    for (size_t i = 0; i < a.rows; i++)
+    for (size_t i = 1; i < a.rows; i++)
     {
         double sum = 0;
         for (size_t n = 0; n < i; n++)
@@ -125,22 +124,22 @@ matrix solve_upper(matrix a, matrix b)
     if (a.rows != b.rows)
         error("The number of rows in the arguments of solve_upper() must be equal");
 
-    for (size_t j = 0; j < a.cols; j++)
+    for (int j = 0; j < a.cols; j++)
     {
-        for (size_t i = j + 1; i < a.rows; i++)
+        for (int i = j + 1; i < a.rows; i++)
         {
-            if (a.elem[i][j])
-                error("The matrix must be upper triangular in solve_lower()");
+            if (a.elem[i][j] > THRESHOLD)
+                error("The matrix must be upper triangular in solve_upper()");
         }
     }
 
-    size_t n = a.rows - 1;
+    int n = a.rows - 1;
     matrix sol = create_matrix(a.rows, 1);
     sol.elem[n][0] = b.elem[n][0] / a.elem[n][n];
-    for (size_t k = n - 1; k >= 0; k--)
+    for (int k = n - 1; k >= 0; k--)
     {
         double sum = 0;
-        for (size_t j = k + 1; j < n; j++)
+        for (int j = k + 1; j <= n; j++)
             sum += a.elem[k][j] * sol.elem[j][0];
         sol.elem[k][0] = (b.elem[k][0] - sum) / a.elem[k][k];
     }

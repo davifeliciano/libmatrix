@@ -11,6 +11,9 @@ void error(char *msg)
 
 matrix create_matrix(size_t nrow, size_t ncol)
 {
+    if (nrow < 2 && ncol < 2)
+        error("Cannot create a matrix with only one element");
+
     matrix mtx;
     mtx.rows = nrow;
     mtx.cols = ncol;
@@ -99,7 +102,7 @@ int null_row(matrix mtx, size_t row)
 {
     for (size_t j = 0; j < mtx.cols; j++)
     {
-        if (mtx.elem[row][j])
+        if (mtx.elem[row][j] > THRESHOLD)
             return 0;
     }
     return 1;
@@ -109,7 +112,7 @@ int null_col(matrix mtx, size_t col)
 {
     for (size_t i = 0; i < mtx.rows; i++)
     {
-        if (mtx.elem[i][col])
+        if (mtx.elem[i][col] > THRESHOLD)
             return 0;
     }
     return 1;
@@ -209,7 +212,7 @@ int matrix_compare(matrix a, matrix b)
     {
         for (size_t j = 0; j < b.cols; j++)
         {
-            if (fabs(a.elem[i][j] - b.elem[i][j]) > 1.0E-12)
+            if (fabs(a.elem[i][j] - b.elem[i][j]) > THRESHOLD)
                 return 0;
         }
     }
