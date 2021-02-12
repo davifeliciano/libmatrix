@@ -2,6 +2,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#define THRESHOLD 10e-12 // Any value bellow this one will be seen as a zero
+
 typedef struct
 {
     size_t rows;
