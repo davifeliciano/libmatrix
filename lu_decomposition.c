@@ -87,3 +87,62 @@ matrix *lu_decompose(matrix mtx)
     result[2] = p;
     return result;
 }
+
+matrix solve_lower(matrix a, matrix b)
+{ // Solves a lower triangular system of linear eqs
+    if (a.rows != a.cols)
+        error("The first argument of solve_lower() must be a square uppper triangular matrix");
+
+    if (a.rows != b.rows)
+        error("The number of rows in the arguments of solve_lower() must be equal");
+
+    for (size_t j = 1; j < a.cols; j++)
+    {
+        for (size_t i = j - 1; i >= 0; i--)
+        {
+            if (a.elem[i][j])
+                error("The matrix must be lower triangular in solve_lower()");
+        }
+    }
+
+    matrix sol = create_matrix(a.rows, 1);
+    sol.elem[0][0] = b.elem[0][0] / a.elem[0][0];
+    for (size_t i = 0; i < a.rows; i++)
+    {
+        double sum = 0;
+        for (size_t n = 0; n < i; n++)
+            sum += a.elem[i][n] * sol.elem[n][0];
+        sol.elem[i][0] = (b.elem[i][0] - sum) / a.elem[i][i];
+    }
+    return sol;
+}
+
+matrix solve_upper(matrix a, matrix b)
+{ // Solves a upper triangular system of linear eqs
+    if (a.rows != a.cols)
+        error("The first argument of solve_upper() must be a square uppper triangular matrix");
+
+    if (a.rows != b.rows)
+        error("The number of rows in the arguments of solve_upper() must be equal");
+
+    for (size_t j = 0; j < a.cols; j++)
+    {
+        for (size_t i = j + 1; i < a.rows; i++)
+        {
+            if (a.elem[i][j])
+                error("The matrix must be upper triangular in solve_lower()");
+        }
+    }
+
+    size_t n = a.rows - 1;
+    matrix sol = create_matrix(a.rows, 1);
+    sol.elem[n][0] = b.elem[n][0] / a.elem[n][n];
+    for (size_t k = n - 1; k >= 0; k--)
+    {
+        double sum = 0;
+        for (size_t j = k + 1; j < n; j++)
+            sum += a.elem[k][j] * sol.elem[j][0];
+        sol.elem[k][0] = (b.elem[k][0] - sum) / a.elem[k][k];
+    }
+    return sol;
+}

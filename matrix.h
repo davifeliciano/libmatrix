@@ -35,5 +35,7 @@ matrix inverse(matrix mtx);
 matrix import_data(char filename[]);
 void matrix_to_file(matrix mtx, int precision, char *filename);
 matrix *lu_decompose(matrix mtx);
+matrix solve_lower(matrix a, matrix b);
+matrix solve_upper(matrix a, matrix b);
 
 #endif
