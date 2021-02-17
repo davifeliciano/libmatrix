@@ -102,7 +102,7 @@ int null_row(matrix mtx, size_t row)
 {
     for (size_t j = 0; j < mtx.cols; j++)
     {
-        if (mtx.elem[row][j] > THRESHOLD)
+        if (fabs(mtx.elem[row][j]) > THRESHOLD)
             return 0;
     }
     return 1;
@@ -112,7 +112,7 @@ int null_col(matrix mtx, size_t col)
 {
     for (size_t i = 0; i < mtx.rows; i++)
     {
-        if (mtx.elem[i][col] > THRESHOLD)
+        if (fabs(mtx.elem[i][col]) > THRESHOLD)
             return 0;
     }
     return 1;
