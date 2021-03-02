@@ -3,3 +3,4 @@ examples/random_matrix
 task?
 *.o
 makefile
+test

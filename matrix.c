@@ -253,6 +253,7 @@ matrix matrix_product(matrix a, matrix b)
 {
     if (a.cols != b.rows)
         error("The product is not well defined given the dimensions of the matrix in matrix_product()");
+
     matrix prod = create_matrix(a.rows, b.cols);
     for (size_t i = 0; i < prod.rows; i++)
     {

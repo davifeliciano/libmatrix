@@ -1,4 +1,6 @@
 #include <stddef.h>
+#include <stdbool.h>
+
 #ifndef MATRIX_H
 #define MATRIX_H
 
@@ -11,6 +13,7 @@ typedef struct
     double **elem;
 } matrix;
 
+// Function prototypes
 void error(char *msg);
 matrix create_matrix(size_t nrow, size_t ncol);
 void free_matrix(matrix *mtx);
@@ -30,14 +33,25 @@ int matrix_compare(matrix a, matrix b);
 matrix matrix_sum(matrix a, matrix b);
 matrix matrix_diff(matrix a, matrix b);
 matrix matrix_product(matrix a, matrix b);
+
 void gauss_eliminate(matrix *mtx, size_t args, ...);
 matrix solve(matrix *mtx, matrix *b);
 double det(matrix mtx);
+
 matrix inverse(matrix mtx);
+
 matrix import_data(char filename[]);
 void matrix_to_file(matrix mtx, int precision, char *filename);
+
 matrix *lu_decompose(matrix mtx);
 matrix solve_lower(matrix a, matrix b);
 matrix solve_upper(matrix a, matrix b);
+
+double max_entry(matrix mtx);
+double infinity_norm(matrix mtx);
+
+double big_eigen(matrix mtx, bool *flag, double (*norm)());
+double small_eigen(matrix mtx, bool *flag, double (*norm)());
+double *eigenvalues(matrix mtx);
 
 #endif
