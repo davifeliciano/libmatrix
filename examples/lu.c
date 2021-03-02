@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     matrix b = import_data(argv[2]);
     printf("B = \n");
     print_matrix(b, 1);
- 
+
     clock_t tic = clock(); // Lets count how much time the calculation takes
 
     matrix *lup = lu_decompose(a);
@@ -36,7 +36,8 @@ int main(int argc, char **argv)
        and [y] is the solution of [l][y] = [p][b] */
 
     // Obtaining [y]
-    matrix y = solve_lower(lup[0], matrix_product(lup[2], b));
+    matrix new_b = matrix_product(lup[2], b);
+    matrix y = solve_lower(lup[0], new_b);
 
     // Obtaining [x]
     matrix x = solve_upper(lup[1], y);
@@ -49,11 +50,14 @@ int main(int argc, char **argv)
 
     free_matrix(&a);
     free_matrix(&b);
+    free_matrix(&new_b);
     free_matrix(&y);
     free_matrix(&x);
 
     for (size_t i = 0; i < 3; i++)
         free_matrix(&lup[i]);
+
+    free(lup);
 
     return 0;
 }
