@@ -53,6 +53,18 @@ matrix copy_matrix(matrix mtx)
     return copy;
 }
 
+void assign_matrix(matrix a, matrix *b)
+{ // Assign the values of matrix a to matrix b
+    if (a.rows != b->rows || a.cols != b->cols)
+        error("The arguments of assign_matrix() must have the same dimensions");
+
+    for (size_t i = 0; i < a.rows; i++)
+    {
+        for (size_t j = 0; j < a.cols; j++)
+            b->elem[i][j] = a.elem[i][j];
+    }
+}
+
 void transpose(matrix *mtx)
 {
     matrix tmp_mtx = copy_matrix(*mtx);
@@ -237,7 +249,8 @@ matrix matrix_sum(matrix a, matrix b)
 matrix matrix_diff(matrix a, matrix b)
 {
     if (a.rows != b.rows || a.cols != b.cols)
-        error("Cannot dubtract matrixes with different dimensions");
+        error("Cannot subtract matrixes with different dimensions");
+
     matrix diff = create_matrix(a.rows, a.cols);
     for (size_t i = 0; i < a.rows; i++)
     {
@@ -266,4 +279,27 @@ matrix matrix_product(matrix a, matrix b)
         }
     }
     return prod;
+}
+
+void scalar_matrix_product(double x, matrix *mtx)
+{
+    for (size_t i = 0; i < mtx->rows; i++)
+    {
+        for (size_t j = 0; j < mtx->cols; j++)
+            mtx->elem[i][j] *= x;
+    }
+}
+
+double dot_product(matrix a, matrix b)
+{
+    if (a.cols != 1 || b.cols != 1)
+        error("The arguments of dot_product() must both be vectors");
+    if (a.rows != b.rows)
+        error("The arguments of dot_product() must have the same dimension");
+
+    double result = 0;
+    for (size_t i = 0; i < a.rows; i++)
+        result += a.elem[i][0] * b.elem[i][0];
+
+    return result;
 }
