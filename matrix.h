@@ -19,6 +19,7 @@ matrix create_matrix(size_t nrow, size_t ncol);
 void free_matrix(matrix *mtx);
 void print_matrix(matrix mtx, int precision);
 matrix copy_matrix(matrix mtx);
+void assign_matrix(matrix a, matrix *b);
 void transpose(matrix *mtx);
 void swap_rows(matrix *mtx, size_t row1, size_t row2);
 void swap_cols(matrix *mtx, size_t col1, size_t col2);
@@ -33,6 +34,8 @@ int matrix_compare(matrix a, matrix b);
 matrix matrix_sum(matrix a, matrix b);
 matrix matrix_diff(matrix a, matrix b);
 matrix matrix_product(matrix a, matrix b);
+void scalar_matrix_product(double x, matrix *mtx);
+double dot_product(matrix a, matrix b);
 
 void gauss_eliminate(matrix *mtx, size_t args, ...);
 matrix solve(matrix *mtx, matrix *b);
@@ -49,9 +52,11 @@ matrix solve_upper(matrix a, matrix b);
 
 double max_entry(matrix mtx);
 double infinity_norm(matrix mtx);
+double euclidian_norm(matrix mtx);
 
 double big_eigen(matrix mtx, bool *flag, double (*norm)());
 double small_eigen(matrix mtx, bool *flag, double (*norm)());
-double *eigenvalues(matrix mtx);
+matrix *qr_decompose(matrix mtx);
+double *eigenvalues_qr(matrix mtx);
 
 #endif
