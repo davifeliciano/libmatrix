@@ -35,3 +35,11 @@ double infinity_norm(matrix mtx)
     free_matrix(&rows_sum);
     return norm;
 }
+
+double euclidian_norm(matrix mtx)
+{
+    if (mtx.cols != 1)
+        error("The argument of euclidian_norm() must be a vector");
+    
+    return sqrt(dot_product(mtx, mtx));
+}
