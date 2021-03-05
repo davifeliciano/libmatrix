@@ -84,19 +84,107 @@ double big_eigen(matrix mtx, bool *flag, double (*norm)())
     return result.value;
 }
 
-double small_eigen(matrix mtx, bool *flag, double (*norm)())
+matrix *qr_decompose(matrix mtx)
 {
-    matrix mtx_inverse = inverse(mtx);
-    double eigen = big_eigen(mtx_inverse, flag, norm);
-    free_matrix(&mtx_inverse);
+    if (mtx.rows != mtx.cols)
+        error("The argument in qr_algorithm() must be a square matrix");
 
-    if (*flag)
-        return 1 / eigen;
-    else
-        return 0.0;
+    matrix q = Id(mtx.rows);
+    matrix r = copy_matrix(mtx);
+    matrix id = Id(mtx.rows);
+
+    for (size_t i = 0; i < r.rows - 1; i++)
+    {
+        matrix c = get_col(r, i);
+        for (size_t j = 0; j < i; j++)
+            c.elem[j][0] = 0.0;
+
+        matrix e = create_matrix(r.rows, 1);
+        for (size_t j = 0; j < e.rows; j++)
+            e.elem[j][0] = 0.0;
+
+        if (c.elem[i][0] > 0)
+            e.elem[i][0] = euclidian_norm(c);
+        else
+            e.elem[i][0] = -euclidian_norm(c);
+
+        matrix v_transp = matrix_sum(c, e);
+        matrix v = copy_matrix(v_transp);
+        transpose(&v_transp);
+        double v_dot_v = dot_product(v, v);
+        matrix w = matrix_product(v, v_transp);
+        scalar_matrix_product(2 / v_dot_v, &w);
+
+        matrix h = matrix_diff(id, w);
+        matrix new_q = matrix_product(q, h);
+        matrix new_r = matrix_product(h, r);
+        assign_matrix(new_q, &q);
+        assign_matrix(new_r, &r);
+
+        free_matrix(&c);
+        free_matrix(&e);
+        free_matrix(&v);
+        free_matrix(&v_transp);
+        free_matrix(&w);
+        free_matrix(&h);
+        free_matrix(&new_q);
+        free_matrix(&new_r);
+    }
+
+    matrix *result = (matrix *)malloc(2 * sizeof(matrix));
+    result[0] = q;
+    result[1] = r;
+
+    free_matrix(&id);
+
+    return result;
 }
 
-double *eigenvalues(matrix mtx)
+double max_lower_triangle(matrix mtx)
+{ // Evaluates the element with greatest absolute value in lower triangle portion of a matrix
+    double max = 0;
+    for (int j = 0; j < mtx.cols; j++)
+    {
+        for (int i = j + 1; i < mtx.rows; i++)
+        {
+            if (fabs(mtx.elem[i][j]) > max)
+                max = mtx.elem[i][j];
+        }
+    }
+    return max;
+}
+
+double *eigenvalues_qr(matrix mtx)
+{
+    if (mtx.rows != mtx.cols)
+        error("The argument in eigenvalues_qr() must be a square matrix");
+
+    matrix copy = copy_matrix(mtx);
+
+    while (fabs(max_lower_triangle(copy)) > THRESHOLD)
+    {
+        matrix *qr = qr_decompose(copy);
+        matrix prod = matrix_product(qr[1], qr[0]);
+
+        assign_matrix(prod, &copy);
+        print_matrix(copy, 12);
+
+        for (size_t i = 0; i < 2; i++)
+            free_matrix(&qr[i]);
+        free(qr);
+        free_matrix(&prod);
+    }
+
+    double *result = (double *)malloc(copy.rows * sizeof(double));
+    for (size_t i = 0; i < copy.rows; i++)
+        result[i] = copy.elem[i][i];
+
+    free_matrix(&copy);
+
+    return result;
+}
+
+double *eigenvalues_sm(matrix mtx)
 {
     if (mtx.rows != mtx.cols)
         error("The argument of eigenvalues() must be a square matrix");
