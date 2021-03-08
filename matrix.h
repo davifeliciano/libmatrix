@@ -4,7 +4,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#define THRESHOLD 10e-12 // Any value bellow this one will be seen as a zero
+#define THRESHOLD 1e-12 // Any value bellow this one will be seen as a zero
 
 typedef struct
 {
@@ -57,6 +57,6 @@ double euclidian_norm(matrix mtx);
 double big_eigen(matrix mtx, bool *flag, double (*norm)());
 double small_eigen(matrix mtx, bool *flag, double (*norm)());
 matrix *qr_decompose(matrix mtx);
-double *eigenvalues_qr(matrix mtx);
+matrix eigenvalues_qr(matrix mtx);
 
 #endif

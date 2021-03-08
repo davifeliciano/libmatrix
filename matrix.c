@@ -11,8 +11,8 @@ void error(char *msg)
 
 matrix create_matrix(size_t nrow, size_t ncol)
 {
-    if (nrow < 2 && ncol < 2)
-        error("Cannot create a matrix with only one element");
+    if (nrow < 1 || ncol < 1)
+        error("Cannot create a zero row or zero column matrix");
 
     matrix mtx;
     mtx.rows = nrow;
