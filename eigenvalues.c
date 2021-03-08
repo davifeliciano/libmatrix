@@ -142,85 +142,84 @@ matrix *qr_decompose(matrix mtx)
 
 double max_lower_triangle(matrix mtx)
 { // Evaluates the element with greatest absolute value in lower triangle portion of a matrix
-    double max = 0;
+    double max = 0.0;
     for (int j = 0; j < mtx.cols; j++)
     {
         for (int i = j + 1; i < mtx.rows; i++)
         {
             if (fabs(mtx.elem[i][j]) > max)
-                max = mtx.elem[i][j];
+                max = fabs(mtx.elem[i][j]);
         }
     }
     return max;
 }
 
-double *eigenvalues_qr(matrix mtx)
-{
+matrix eigenvalues_qr(matrix mtx)
+{ /* A better algorithm to evaluate eigenvalues
+    In the abssense of complex arithmetic, it computes
+    only the real eigenvalues
+    Double shift QR factorization is the way to go
+    if you're trying to compute all eigenvalues using only
+    real arithmetic. */
+
     if (mtx.rows != mtx.cols)
         error("The argument in eigenvalues_qr() must be a square matrix");
 
     matrix copy = copy_matrix(mtx);
+    size_t count = 0;
 
-    while (fabs(max_lower_triangle(copy)) > THRESHOLD)
+    while (max_lower_triangle(copy) > THRESHOLD / 2 && count < copy.rows * 1000)
     {
         matrix *qr = qr_decompose(copy);
         matrix prod = matrix_product(qr[1], qr[0]);
 
         assign_matrix(prod, &copy);
-        print_matrix(copy, 12);
 
         for (size_t i = 0; i < 2; i++)
             free_matrix(&qr[i]);
         free(qr);
         free_matrix(&prod);
+
+        count++;
     }
 
+    //    printf("shur matrix =\n");
+    //    print_matrix(copy, 12);
+
+    size_t result_count = 0; // How many eigenvalues found yet?
+    size_t i = 0;
     double *result = (double *)malloc(copy.rows * sizeof(double));
-    for (size_t i = 0; i < copy.rows; i++)
-        result[i] = copy.elem[i][i];
 
-    free_matrix(&copy);
-
-    return result;
-}
-
-double *eigenvalues_sm(matrix mtx)
-{
-    if (mtx.rows != mtx.cols)
-        error("The argument of eigenvalues() must be a square matrix");
-
-    matrix id = Id(mtx.rows);
-    double *result = (double *)malloc(sizeof(double));
-
-    bool flag1;
-    double eigen = big_eigen(mtx, &flag1, infinity_norm);
-    if (flag1)
+    while (i < copy.rows)
     {
-        result[0] = eigen;
-        matrix shifted = create_matrix(mtx.rows, mtx.cols);
-        size_t count = 1;
-
-        while (count < mtx.rows && flag1)
+        if (i == copy.rows - 1)
         {
-            for (size_t i = 0; i < id.rows; i++)
-                id.elem[i][i] = eigen;
-
-            shifted = matrix_diff(mtx, id);
-            eigen = big_eigen(shifted, &flag1, infinity_norm);
-            if (flag1)
+            result[result_count] = copy.elem[i][i];
+            result_count++;
+            i++;
+        }
+        else
+        {
+            if (fabs(copy.elem[i + 1][i]) < THRESHOLD)
             {
-                result = realloc((void *)result, (count + 1) * sizeof(double));
-                result[count] = eigen + result[count - 1];
+                result[result_count] = copy.elem[i][i];
+                result_count++;
+                i++;
             }
             else
-                printf("Failed on eigenvalue #%ld\n\n", count + 1);
+                i += 2;
         }
-
-        free_matrix(&shifted);
     }
-    else
-        fprintf(stderr, "Failed to compute dominant eigenvalue of the given matrix");
 
-    free_matrix(&id);
-    return result;
+    if (result_count == 0)
+        error("The matrix has no real eigenvalues");
+
+    matrix eigen = create_matrix(result_count, 1);
+    for (size_t i = 0; i < eigen.rows; i++)
+        eigen.elem[i][0] = result[i];
+
+    free(result);
+    free_matrix(&copy);
+
+    return eigen;
 }
