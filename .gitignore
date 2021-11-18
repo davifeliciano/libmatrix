@@ -1,4 +1,7 @@
 examples/determinant
 examples/random_matrix
-task?
+task1/ge
+task1/lu
+task2/task2_eigen
+task2/task2_qr
 *.o
